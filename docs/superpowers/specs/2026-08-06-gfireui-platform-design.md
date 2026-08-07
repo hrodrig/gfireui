@@ -91,7 +91,7 @@ Every user has:
 - Claims include at least: `sub` (user id), `role`, `email`.
 - Password hashing: **argon2id**.
 - **Bootstrap:**  
-  - Env first-boot: `GFIREUI_ADMIN_USER` / `GFIREUI_ADMIN_PASSWORD` (and name fields as needed) creates Administrator if DB empty.  
+  - Env first-boot: `GFIREUI_BACKEND_BOOTSTRAP_ADMIN_*` (email, password, first/last name) creates Administrator if DB empty.  
   - CLI: `gfireui-backend user create --role Administrator` (and related flags) for ongoing ops.
 - Signing key and GFire service Bearer: **environment / config** of the backend only (not in UI DB in v0.1).
 
