@@ -168,15 +168,29 @@ gfireui/
 
 ## Development
 
+**Compose (recommended):** cooks sibling `gfireui-backend:<VERSION>` image, then starts postgres + BFF + Vite UI.
+
 ```sh
-cp .env.example .env   # PUBLIC_GFIREUI_API_BASE → gfireui-backend
-npm install
-npm run dev            # http://127.0.0.1:5173
-npm run check
-npm run build          # static SPA → build/ (adapter-static, fallback index.html)
+# sibling checkout expected at ../gfireui-backend
+# stop other stacks on :8090 / :5433 first (e.g. make -C ../gfireui-backend compose-down)
+make compose-up
+# UI  http://127.0.0.1:5173
+# API http://127.0.0.1:8090/healthz
+# Login: admin@example.com / adminadmin
+make compose-down
 ```
 
-Pair with a running **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)** (`GFIREUI_BACKEND_*`) and, for ops screens, a **[gfire](https://github.com/hrodrig/gfire)** instance.
+**Local Vite only** (BFF already running):
+
+```sh
+cp .env.example .env   # PUBLIC_GFIREUI_API_BASE=http://127.0.0.1:8090
+npm install
+npm run dev
+npm run check
+npm run build          # static SPA → build/
+```
+
+Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `GFIREUI_BACKEND_GFIRE_*` on the BFF.
 
 [↑ Back to top](#readme-top)
 

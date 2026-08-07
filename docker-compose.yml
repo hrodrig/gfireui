@@ -1,0 +1,78 @@
+# Full local stack for GFireUI development.
+# Requires a pre-cooked backend image (default gfireui-backend:0.1.0).
+# Prefer: make compose-up  (builds sibling image, then starts this stack)
+#
+# Browser → UI :5173 → API http://127.0.0.1:8090 (PUBLIC_GFIREUI_API_BASE)
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gfireui
+      POSTGRES_PASSWORD: gfireui
+      POSTGRES_DB: gfireui
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gfireui -d gfireui"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - gfireui_pg:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate:v4.18.1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ${GFIREUI_BACKEND_DIR:-../gfireui-backend}/migrations:/migrations:ro
+    command:
+      [
+        "-path=/migrations",
+        "-database=postgres://gfireui:gfireui@postgres:5432/gfireui?sslmode=disable",
+        "up",
+      ]
+
+  backend:
+    image: ${GFIREUI_BACKEND_IMAGE:-gfireui-backend:0.1.0}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8090:8090"
+    environment:
+      GFIREUI_BACKEND_SERVER_ADDR: ":8090"
+      GFIREUI_BACKEND_DATABASE_DSN: "postgres://gfireui:gfireui@postgres:5432/gfireui?sslmode=disable"
+      GFIREUI_BACKEND_AUTH_JWT_SECRET: "dev-only-change-me"
+      GFIREUI_BACKEND_AUTH_TOKEN_TTL: "24h"
+      GFIREUI_BACKEND_GFIRE_BASE_URL: "${GFIREUI_BACKEND_GFIRE_BASE_URL:-}"
+      GFIREUI_BACKEND_GFIRE_TOKEN: "${GFIREUI_BACKEND_GFIRE_TOKEN:-}"
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_EMAIL: "${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}"
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_PASSWORD: "${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_PASSWORD:-adminadmin}"
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_FIRST_NAME: "${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_FIRST_NAME:-Admin}"
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_LAST_NAME: "${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_LAST_NAME:-User}"
+
+  ui:
+    image: node:22-alpine
+    working_dir: /app
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    environment:
+      # Browser calls the host-mapped backend port (not the Docker service DNS name).
+      PUBLIC_GFIREUI_API_BASE: "${PUBLIC_GFIREUI_API_BASE:-http://127.0.0.1:8090}"
+    volumes:
+      - .:/app
+      - gfireui_node_modules:/app/node_modules
+    command:
+      [
+        "sh",
+        "-c",
+        "npm install && npm run dev -- --host 0.0.0.0 --port 5173",
+      ]
+
+volumes:
+  gfireui_pg:
+  gfireui_node_modules:
