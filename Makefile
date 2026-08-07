@@ -1,11 +1,7 @@
-# gfireui — local SPA + sibling BFF image workflow
+# gfireui — SPA + local stack using a pre-cooked gfireui-backend image
 
-BACKEND_DIR ?= ../gfireui-backend
-BACKEND_VERSION := $(shell cat $(BACKEND_DIR)/VERSION 2>/dev/null | tr -d ' \n\r')
-ifeq ($(strip $(BACKEND_VERSION)),)
-  BACKEND_VERSION := 0.1.0
-endif
-BACKEND_IMAGE := gfireui-backend:$(BACKEND_VERSION)
+BACKEND_IMAGE ?= gfireui-backend:0.1.0
+COMPOSE_MIGRATIONS := .compose/migrations
 
 check-docker = @docker info >/dev/null 2>&1 || { echo "Error: Docker is not running. Start Docker and try again."; exit 1; }
 
@@ -15,7 +11,7 @@ RESET  := \033[0m
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install check test build compose-up compose-down backend-image
+.PHONY: help install check test build ensure-backend-image extract-migrations compose-up compose-down
 
 help:
 	@echo "$(GREEN)gfireui$(RESET) — GFire ops console (SvelteKit)"
@@ -26,13 +22,14 @@ help:
 	@echo "  $(GREEN)test$(RESET)            vitest"
 	@echo "  $(GREEN)build$(RESET)           static production build"
 	@echo ""
-	@echo "$(YELLOW)Docker:$(RESET)"
-	@echo "  $(GREEN)backend-image$(RESET)   make docker-build in $(BACKEND_DIR) → $(BACKEND_IMAGE)"
-	@echo "  $(GREEN)compose-up$(RESET)      cook backend image, then full stack (UI :5173, API :8090)"
+	@echo "$(YELLOW)Docker (standalone — no sibling checkout):$(RESET)"
+	@echo "  $(GREEN)compose-up$(RESET)      postgres + $(BACKEND_IMAGE) + Vite UI"
 	@echo "  $(GREEN)compose-down$(RESET)    stop stack"
 	@echo ""
-	@echo "Backend image: $(BACKEND_IMAGE)"
-	@echo "Login (compose defaults): admin@example.com / adminadmin"
+	@echo "Requires local image $(BACKEND_IMAGE) (build/pull elsewhere)."
+	@echo "Override: make compose-up BACKEND_IMAGE=gfireui-backend:0.1.0"
+	@echo "Login: admin@example.com / adminadmin"
+	@echo "Ports: UI :5173  API :8090  Postgres :5433"
 
 install:
 	npm install
@@ -46,15 +43,28 @@ test:
 build:
 	npm run build
 
-backend-image:
+ensure-backend-image:
 	$(check-docker)
-	@test -d "$(BACKEND_DIR)" || { echo "Error: BACKEND_DIR not found: $(BACKEND_DIR)"; exit 1; }
-	$(MAKE) -C "$(BACKEND_DIR)" docker-build
+	@docker image inspect $(BACKEND_IMAGE) >/dev/null 2>&1 || { \
+		echo "Missing local image $(BACKEND_IMAGE)."; \
+		echo "Build it from gfireui-backend (make docker-build) or pull when published."; \
+		echo "Then: make compose-up BACKEND_IMAGE=$(BACKEND_IMAGE)"; \
+		exit 1; \
+	}
 
-compose-up: backend-image
-	GFIREUI_BACKEND_IMAGE=$(BACKEND_IMAGE) \
-	GFIREUI_BACKEND_DIR=$(BACKEND_DIR) \
-		docker compose up -d
+# Migrations ship inside the BFF image at /app/migrations (distroless — extract to host).
+extract-migrations: ensure-backend-image
+	@mkdir -p $(COMPOSE_MIGRATIONS)
+	@cid=$$(docker create $(BACKEND_IMAGE)) && \
+		docker cp "$$cid:/app/migrations/." "$(COMPOSE_MIGRATIONS)/" && \
+		docker rm -f "$$cid" >/dev/null
+	@test -n "$$(ls -A $(COMPOSE_MIGRATIONS) 2>/dev/null)" || { \
+		echo "Error: $(BACKEND_IMAGE) has no /app/migrations"; \
+		exit 1; \
+	}
+
+compose-up: extract-migrations
+	GFIREUI_BACKEND_IMAGE=$(BACKEND_IMAGE) docker compose up -d
 	@echo ""
 	@echo "UI  http://127.0.0.1:5173"
 	@echo "API http://127.0.0.1:8090/healthz"

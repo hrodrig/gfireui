@@ -4,10 +4,10 @@
 	import { listRecurring } from '$lib/api/gfire';
 	import { canMutateJobs } from '$lib/auth/roles';
 	import { session } from '$lib/auth/session';
+	import { toastError, toastSuccess } from '$lib/toast/toast';
 
 	let rows = $state<Record<string, unknown>[]>([]);
 	let error = $state('');
-	let message = $state('');
 	let name = $state('');
 	let cron = $state('');
 	let handler = $state('');
@@ -25,7 +25,6 @@
 
 	async function createRecurring(event: Event) {
 		event.preventDefault();
-		message = '';
 		error = '';
 		try {
 			await apiPost('/api/gfire/v1/recurring', {
@@ -33,24 +32,23 @@
 				cron,
 				handler
 			});
-			message = 'Created recurring definition';
+			toastSuccess('Created recurring definition');
 			name = '';
 			cron = '';
 			handler = '';
 			await load();
 		} catch (err) {
-			error = err instanceof ApiError ? err.message : 'Create failed';
+			toastError(err instanceof ApiError ? err.message : 'Create failed');
 		}
 	}
 
 	async function trigger(id: string) {
-		message = '';
 		error = '';
 		try {
 			await apiPost(`/api/gfire/v1/recurring/${encodeURIComponent(id)}/trigger`);
-			message = `Triggered ${id}`;
+			toastSuccess(`Triggered ${id}`);
 		} catch (err) {
-			error = err instanceof ApiError ? err.message : 'Trigger failed';
+			toastError(err instanceof ApiError ? err.message : 'Trigger failed');
 		}
 	}
 
@@ -63,9 +61,6 @@
 	<h1>Recurring</h1>
 	{#if error}
 		<p class="error">{error}</p>
-	{/if}
-	{#if message}
-		<p class="ok">{message}</p>
 	{/if}
 
 	{#if mutable}
@@ -149,9 +144,6 @@
 	}
 	.error {
 		color: var(--danger);
-	}
-	.ok {
-		color: var(--success);
 	}
 	code {
 		font-size: 0.75rem;

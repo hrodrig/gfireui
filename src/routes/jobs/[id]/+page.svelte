@@ -7,10 +7,10 @@
 	import type { GFireJob } from '$lib/api/types';
 	import { canMutateJobs } from '$lib/auth/roles';
 	import { session } from '$lib/auth/session';
+	import { toastError, toastSuccess } from '$lib/toast/toast';
 
 	let job = $state<GFireJob | null>(null);
 	let error = $state('');
-	let message = $state('');
 	let busy = $state(false);
 
 	const id = $derived($page.params.id ?? '');
@@ -29,17 +29,16 @@
 
 	async function run(action: 'requeue' | 'cancel' | 'delete') {
 		busy = true;
-		message = '';
 		error = '';
 		try {
 			if (action === 'requeue') await requeueJob(id);
 			if (action === 'cancel') await cancelJob(id);
 			if (action === 'delete') await deleteJob(id);
-			message = `Action ${action} succeeded`;
+			toastSuccess(`Action ${action} succeeded`);
 			if (action !== 'delete') await load();
 			else job = null;
 		} catch (err) {
-			error = err instanceof ApiError ? err.message : `Action ${action} failed`;
+			toastError(err instanceof ApiError ? err.message : `Action ${action} failed`);
 		} finally {
 			busy = false;
 		}
@@ -56,9 +55,6 @@
 
 	{#if error}
 		<p class="error" role="alert">{error}</p>
-	{/if}
-	{#if message}
-		<p class="ok">{message}</p>
 	{/if}
 
 	{#if job}
@@ -107,10 +103,6 @@
 
 	.error {
 		color: var(--danger);
-	}
-
-	.ok {
-		color: var(--success);
 	}
 
 	.muted {

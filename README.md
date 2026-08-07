@@ -168,17 +168,22 @@ gfireui/
 
 ## Development
 
-**Compose (recommended):** cooks sibling `gfireui-backend:<VERSION>` image, then starts postgres + BFF + Vite UI.
+**Compose (recommended):** full stack from this repo alone — needs a **local** BFF image.
 
 ```sh
-# sibling checkout expected at ../gfireui-backend
-# stop other stacks on :8090 / :5433 first (e.g. make -C ../gfireui-backend compose-down)
+# once: cook or pull the BFF image (example from a gfireui-backend checkout)
+#   make -C ../gfireui-backend docker-build
+# or: docker pull … when published
+
 make compose-up
 # UI  http://127.0.0.1:5173
 # API http://127.0.0.1:8090/healthz
 # Login: admin@example.com / adminadmin
 make compose-down
 ```
+
+Override image tag: `make compose-up BACKEND_IMAGE=gfireui-backend:0.1.0`.  
+Do not run [gfireui-backend](https://github.com/hrodrig/gfireui-backend) compose at the same time (same `:8090` / `:5433`).
 
 **Local Vite only** (BFF already running):
 

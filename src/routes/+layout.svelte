@@ -2,6 +2,7 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Nav from '$lib/components/Nav.svelte';
+	import ToastHost from '$lib/components/ToastHost.svelte';
 	import { hydrateSession, session } from '$lib/auth/session';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -30,6 +31,8 @@
 	<link rel="icon" href={favicon} />
 	<title>GFireUI</title>
 </svelte:head>
+
+<ToastHost />
 
 {#if !ready}
 	<main class="boot">Loading…</main>
