@@ -1,0 +1,71 @@
+# Whitelist-only: ignore everything (including dotfiles) unless listed below.
+
+*
+
+# Allow descending into whitelisted directories only
+!*/
+
+# ── Root files ──
+!.gitignore
+!package.json
+!package-lock.json
+!pnpm-lock.yaml
+!bun.lockb
+!svelte.config.js
+!vite.config.ts
+!vite.config.js
+!tsconfig.json
+!tsconfig.app.json
+!tsconfig.node.json
+!Makefile
+!AGENTS.md
+!ROADMAP.md
+!SPECIFICATIONS.md
+!README.md
+!LICENSE
+!VERSION
+!CHANGELOG.md
+!SECURITY.md
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+!Dockerfile
+!docker-compose.yml
+!.env.example
+!static/
+!static/**
+
+# ── Docs / assets ──
+!docs/
+!docs/**
+
+# ── GitHub ──
+!.github/
+!.github/**
+!.github/**/**
+
+# ── App source (SvelteKit) ──
+!src/
+!src/**/
+!src/**/*
+
+# ── Dotfiles/dotdirs (re-ignore after !*/) ──
+.*
+**/.*/
+**/.**
+!.gitignore
+!.env.example
+!.npmrc
+!.github/
+!.github/**
+# !.prettierrc   # uncomment when added
+# !.eslint*      # uncomment when added
+
+# ── Build / deps (always ignore) ──
+node_modules/
+.build/
+.svelte-kit/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
