@@ -36,7 +36,7 @@
 
 GFireUI is the **browser console** for [GFire](https://github.com/hrodrig/gfire): a language-agnostic, HTTP-first job service. The engine stays a single binary with no embedded UI. This repo is the **SvelteKit SPA** — pixels, charts, and workflows. Identity, permissions, and the GFire proxy live in **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)**.
 
-> **Status: design approved, implementation starting.** v0.1.0 — platform design locked; no runnable app yet. Track progress here and in the backend ROADMAP once scaffolding lands.
+> **Status: v0.1 UI surface on `develop`.** Login, role-aware nav, jobs/queues/recurring/servers, users, audit, polled ops charts. Pair with gfireui-backend.
 
 **Related tools (same maintainer):**
 - **[gfire](https://github.com/hrodrig/gfire)** — standalone background job service ([gfire.net](https://gfire.net))
@@ -154,29 +154,29 @@ gfireui/
 ├── README.md
 ├── VERSION
 ├── LICENSE
+├── package.json
+├── svelte.config.js
+├── src/
+├── static/
 └── docs/
     ├── assets/
     │   └── gfireui-hero.png
-    └── superpowers/specs/
-        └── 2026-08-06-gfireui-platform-design.md
+    └── superpowers/
 ```
-
-Application sources appear as scaffolding lands (`src/`, `package.json`, …).
 
 [↑ Back to top](#readme-top)
 
 ## Development
 
-Not runnable yet. After scaffold:
-
 ```sh
-# expected shape (subject to plan)
+cp .env.example .env   # PUBLIC_GFIREUI_API_BASE → gfireui-backend
 npm install
-npm run dev          # Vite / SvelteKit
-# point at gfireui-backend API base URL via env
+npm run dev            # http://127.0.0.1:5173
+npm run check
+npm run build          # static SPA → build/ (adapter-static, fallback index.html)
 ```
 
-Pair with a running **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)** and a **[gfire](https://github.com/hrodrig/gfire)** instance.
+Pair with a running **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)** (`GFIREUI_BACKEND_*`) and, for ops screens, a **[gfire](https://github.com/hrodrig/gfire)** instance.
 
 [↑ Back to top](#readme-top)
 

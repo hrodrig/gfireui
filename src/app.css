@@ -1,0 +1,106 @@
+@import '@fontsource/sora/400.css';
+@import '@fontsource/sora/600.css';
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/600.css';
+
+:root,
+[data-theme='dark'] {
+	--bg-page: #1a1a1a;
+	--bg-card: #212222;
+	--border: #333333;
+	--text: #f8fafc;
+	--text-muted: #a3a3a3;
+	--brand: #3b82f6;
+	--success: #4ade80;
+	--warning: #facc15;
+	--danger: #f87171;
+}
+
+[data-theme='light'] {
+	--bg-page: #f4f6f8;
+	--bg-card: #ffffff;
+	--border: #e2e8f0;
+	--text: #0f172a;
+	--text-muted: #64748b;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	color-scheme: light dark;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	background-color: var(--bg-page);
+	color: var(--text);
+	font-family: 'Source Sans 3', system-ui, sans-serif;
+	font-size: 1rem;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: Sora, system-ui, sans-serif;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+a {
+	color: var(--brand);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+button,
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.375rem;
+	padding: 0.5rem 0.875rem;
+	border: 1px solid var(--border);
+	border-radius: 0.375rem;
+	background-color: var(--bg-card);
+	color: var(--text);
+	font-family: Sora, system-ui, sans-serif;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		color 0.15s ease;
+}
+
+button:hover,
+.button:hover {
+	border-color: var(--brand);
+	color: var(--brand);
+}
+
+button:focus-visible,
+.button:focus-visible {
+	outline: 2px solid var(--brand);
+	outline-offset: 2px;
+}
+
+button:disabled,
+.button:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
