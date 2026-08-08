@@ -1,23 +1,18 @@
 <script lang="ts">
 	import type { GFireJob } from '$lib/api/types';
+	import { listJobFields, processingServerId, type JobStateEntry } from '$lib/jobs/parse';
 
 	type Props = {
 		jobs: GFireJob[];
 		onSelect?: (id: string) => void;
+		emptyMessage?: string;
 	};
 
-	let { jobs, onSelect }: Props = $props();
+	let { jobs, onSelect, emptyMessage = 'No jobs match this filter.' }: Props = $props();
 
-	function jobId(job: GFireJob): string {
-		return String(job.id ?? job.ID ?? '');
-	}
-
-	function jobField(job: GFireJob, ...keys: string[]): string {
-		for (const key of keys) {
-			const value = job[key];
-			if (value != null && value !== '') return String(value);
-		}
-		return '—';
+	function peer(job: GFireJob): string {
+		const states = (job.states as JobStateEntry[] | undefined) ?? [];
+		return processingServerId(states) ?? '—';
 	}
 </script>
 
@@ -29,28 +24,32 @@
 				<th scope="col">State</th>
 				<th scope="col">Queue</th>
 				<th scope="col">Handler</th>
+				<th scope="col">Peer</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each jobs as job}
-				{@const id = jobId(job)}
+				{@const fields = listJobFields(job as Record<string, unknown>)}
 				<tr>
 					<td>
-						{#if id && onSelect}
-							<button type="button" class="linkish" onclick={() => onSelect(id)}>{id}</button>
+						{#if fields.id && onSelect}
+							<button type="button" class="linkish" onclick={() => onSelect(fields.id)}>
+								{fields.id}
+							</button>
 						{:else}
-							{id || '—'}
+							{fields.id || '—'}
 						{/if}
 					</td>
-					<td>{jobField(job, 'state', 'State')}</td>
-					<td>{jobField(job, 'queue', 'Queue')}</td>
-					<td>{jobField(job, 'handler', 'Handler', 'type', 'Type')}</td>
+					<td>{fields.state || '—'}</td>
+					<td>{fields.queue}</td>
+					<td>{fields.name}</td>
+					<td class="peer">{peer(job)}</td>
 				</tr>
 			{/each}
 		</tbody>
 	</table>
 	{#if jobs.length === 0}
-		<p class="empty">No jobs match this filter.</p>
+		<p class="empty">{emptyMessage}</p>
 	{/if}
 </div>
 
@@ -65,7 +64,6 @@
 	table {
 		width: 100%;
 		border-collapse: collapse;
-		font-size: 0.9rem;
 	}
 
 	th,
@@ -73,22 +71,21 @@
 		padding: 0.65rem 0.75rem;
 		border-bottom: 1px solid var(--border);
 		text-align: left;
+		font-size: 0.875rem;
 	}
 
-	th {
-		font-family: Sora, system-ui, sans-serif;
-		font-size: 0.75rem;
-		color: var(--text-muted);
-		font-weight: 600;
+	.peer {
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
 	}
 
 	.linkish {
-		border: 0;
 		background: none;
+		border: none;
 		padding: 0;
 		color: var(--brand);
-		font: inherit;
 		cursor: pointer;
+		font: inherit;
 		text-decoration: underline;
 	}
 

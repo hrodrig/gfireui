@@ -23,9 +23,19 @@ export type QueueSummary = {
 	depth: number;
 };
 
+export type OpsVersionInfo = {
+	name: string;
+	version?: string;
+	commit?: string;
+	url: string;
+};
+
 export type OpsSummary = {
 	jobs_by_state: Record<string, number>;
 	queues: QueueSummary[];
+	servers_count?: number;
+	recurring_count?: number;
+	versions?: OpsVersionInfo[];
 	generated_at: string;
 };
 
@@ -41,15 +51,19 @@ export type AuditEvent = {
 	created_at: string;
 };
 
-/** Loose GFire job shape (fields vary by engine version). */
+/** Loose GFire job shape (fields vary by engine version / list vs detail). */
 export type GFireJob = {
 	id?: string;
 	ID?: string;
 	state?: string;
 	State?: string;
+	current_state?: string;
 	queue?: string;
 	Queue?: string;
 	handler?: string;
 	Handler?: string;
+	name?: string;
+	job?: Record<string, unknown>;
+	states?: unknown[];
 	[key: string]: unknown;
 };

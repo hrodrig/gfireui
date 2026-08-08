@@ -6,7 +6,7 @@
 	import { apiGet, ApiError } from '$lib/api/client';
 	import type { OpsSummary } from '$lib/api/types';
 
-	const STATES = ['pending', 'processing', 'succeeded', 'failed', 'dead'] as const;
+	const STATES = ['Enqueued', 'Processing', 'Succeeded', 'Failed', 'Dead'] as const;
 
 	let error = $state('');
 	let summary = $state<OpsSummary | null>(null);

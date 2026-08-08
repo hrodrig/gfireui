@@ -7,6 +7,8 @@ COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 BUILDDATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 IMAGE ?= gfireui:$(VERSION)
 PUBLIC_GFIREUI_API_BASE ?= http://127.0.0.1:8090
+PUBLIC_GFIREUI_CONSOLE_TITLE ?= GFire
+PUBLIC_GFIREUI_VERSION ?= $(VERSION)
 COVER_MIN_PERCENT ?= 80
 
 check-docker = @docker info >/dev/null 2>&1 || { echo "Error: Docker is not running. Start Docker and try again."; exit 1; }
@@ -56,12 +58,17 @@ cover:
 	@echo "cover: Vitest thresholds enforce ≥$(COVER_MIN_PERCENT)% statements/lines (see vitest.config.ts)"
 
 build:
-	PUBLIC_GFIREUI_API_BASE=$(PUBLIC_GFIREUI_API_BASE) npm run build
+	PUBLIC_GFIREUI_API_BASE=$(PUBLIC_GFIREUI_API_BASE) \
+		PUBLIC_GFIREUI_CONSOLE_TITLE=$(PUBLIC_GFIREUI_CONSOLE_TITLE) \
+		PUBLIC_GFIREUI_VERSION=$(PUBLIC_GFIREUI_VERSION) \
+		npm run build
 
 docker-build: ## requires Docker
 	$(check-docker)
 	docker build \
 		--build-arg PUBLIC_GFIREUI_API_BASE=$(PUBLIC_GFIREUI_API_BASE) \
+		--build-arg PUBLIC_GFIREUI_CONSOLE_TITLE=$(PUBLIC_GFIREUI_CONSOLE_TITLE) \
+		--build-arg PUBLIC_GFIREUI_VERSION=$(PUBLIC_GFIREUI_VERSION) \
 		--build-arg VERSION=$(VERSION) \
 		--build-arg REVISION=$(COMMIT) \
 		--build-arg BUILDDATE=$(BUILDDATE) \

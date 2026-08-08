@@ -63,6 +63,8 @@ jobs:
             ghcr.io/hrodrig/gfireui:latest
           build-args: |
             PUBLIC_GFIREUI_API_BASE=http://127.0.0.1:8090
+            PUBLIC_GFIREUI_CONSOLE_TITLE=GFire
+            PUBLIC_GFIREUI_VERSION=${{ steps.ver.outputs.version }}
             VERSION=${{ steps.ver.outputs.version }}
             REVISION=${{ github.sha }}
           provenance: true
