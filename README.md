@@ -7,7 +7,8 @@
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](./VERSION)
 [![SvelteKit](https://img.shields.io/badge/SvelteKit-SPA-FF3E00?logo=svelte)](https://kit.svelte.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
-[![Status](https://img.shields.io/badge/status-design-yellow)](#current-status)
+[![Status](https://img.shields.io/badge/status-v0.1.0-brightgreen)](#current-status)
+[![GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfireui-2496ED?logo=github)](https://github.com/hrodrig/gfireui/pkgs/container/gfireui)
 [![Companion](https://img.shields.io/badge/backend-gfireui--backend-0ea5e9)](https://github.com/hrodrig/gfireui-backend)
 
 **Repo:** [github.com/hrodrig/gfireui](https://github.com/hrodrig/gfireui) · **Backend:** [gfireui-backend](https://github.com/hrodrig/gfireui-backend) · **Engine:** [gfire](https://github.com/hrodrig/gfire) · **Design:** [platform design](./docs/superpowers/specs/2026-08-06-gfireui-platform-design.md) · **Site:** [gfire.net](https://gfire.net)
@@ -36,7 +37,7 @@
 
 GFireUI is the **browser console** for [GFire](https://github.com/hrodrig/gfire): a language-agnostic, HTTP-first job service. The engine stays a single binary with no embedded UI. This repo is the **SvelteKit SPA** — pixels, charts, and workflows. Identity, permissions, and the GFire proxy live in **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)**.
 
-> **Status: v0.1 UI surface on `develop`.** Login, role-aware nav, jobs/queues/recurring/servers, users, audit, polled ops charts. Pair with gfireui-backend.
+> **Status: v0.1.0.** Login, role-aware nav, jobs/queues/recurring/servers, users, audit, polled ops charts. Production image on GHCR (tag `v0.1.0`). Pair with gfireui-backend.
 
 **Related tools (same maintainer):**
 - **[gfire](https://github.com/hrodrig/gfire)** — standalone background job service ([gfire.net](https://gfire.net))
@@ -140,10 +141,12 @@ Ops tooling that does not look like a spreadsheet abandoned in 2014.
 | Item | State |
 | ---- | ----- |
 | Platform design | ✅ Approved 2026-08-06 |
-| Scaffold (SvelteKit app) | ⬜ |
-| Wired to backend | ⬜ |
-| Docker Compose demo | ⬜ |
-| First runnable release | ⬜ |
+| Scaffold (SvelteKit app) | ✅ |
+| Wired to backend | ✅ (via gfireui-backend) |
+| Docker Compose demo | ✅ `make compose-up` |
+| OCI image + CI / GHCR / SBOM / cosign | ✅ |
+| Coverage gate ≥ 80% (`src/lib`) | ✅ |
+| First runnable release | ✅ **v0.1.0** |
 
 [↑ Back to top](#readme-top)
 
@@ -153,7 +156,9 @@ Ops tooling that does not look like a spreadsheet abandoned in 2014.
 gfireui/
 ├── README.md
 ├── VERSION
+├── CHANGELOG.md
 ├── LICENSE
+├── Dockerfile
 ├── package.json
 ├── svelte.config.js
 ├── src/
