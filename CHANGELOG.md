@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-08
+
 ### Added
 
 - Ops polish: configurable console title (`PUBLIC_GFIREUI_CONSOLE_TITLE`), GFire state filter rail, Attention view (Failed + Dead), structured job detail + timeline, typed servers table, footer with gfire/gfireui/gfireui-backend versions and repo links.
