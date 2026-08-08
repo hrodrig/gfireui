@@ -8,8 +8,10 @@
 
 Hangfire/Sidekiq-class UIs are a **functional reference** (operator muscle memory), not a product template.
 
+References: Hangfire / [Sidekiq](https://sidekiq.org/) product UIs and the [Monitoring wiki](https://github.com/sidekiq/sidekiq/wiki/Monitoring) (Web UI, `/stats`, queue latency). Rails Sidekiq admin tutorials are orientation only.
+
 - Steal patterns that cut time-to-diagnosis for a **headless, multi-peer, polyglot-handler** job service.
-- Do **not** clone layout, naming, or .NET metaphors.
+- Do **not** clone layout, naming, .NET, or Ruby/Rails mount metaphors.
 - Prefer GFire-native concepts as differentiators.
 
 ## Adopt vs reject
@@ -22,8 +24,11 @@ Hangfire/Sidekiq-class UIs are a **functional reference** (operator muscle memor
 | Configurable console title | Adopt (`PUBLIC_GFIREUI_CONSOLE_TITLE`) |
 | Calm empty-states | Adopt (our voice) |
 | Separate “Retries” product tab | Adapt → **Attention** (Failed + Dead) |
+| Queue **latency** (age of oldest enqueued) as ops signal | Adopt later (Sidekiq-style; needs engine metric/API) |
+| Compact JSON stats endpoint for probes | Partial — BFF `ops/summary` already; tighten for k8s probes later |
+| Mount Web UI under `/sidekiq` + `X-Script-Name` | Reject for SPA — k8s uses Host/Ingress rewrite; no app `BASE_PATH` |
 | C# Activate / culture / “Back to site” | Reject |
-| Pixel-clone HF chrome / HF graphs | Reject |
+| Pixel-clone HF / Sidekiq chrome | Reject |
 
 ## Differentiators
 

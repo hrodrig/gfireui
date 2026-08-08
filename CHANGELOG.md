@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Console favicon/icons use gfire.net brand mark (SVG, ICO, PNG, apple-touch) instead of the default Svelte logo.
 - Release quality: `make release-check` runs `npm audit --audit-level=high` then check/cover/build; tag workflow calls Make before GHCR push (fail-closed family contract).
 - Ops charts use canonical GFire state names (Enqueued/Processing/…).
 
