@@ -4,10 +4,10 @@
 
 **🖥** _See the queue. Run the fleet. Leave GFire headless._
 
-[![Version](https://img.shields.io/badge/version-0.1.2-blue)](./VERSION)
+[![Version](https://img.shields.io/badge/version-0.1.3-blue)](./VERSION)
 [![SvelteKit](https://img.shields.io/badge/SvelteKit-SPA-FF3E00?logo=svelte)](https://kit.svelte.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
-[![Status](https://img.shields.io/badge/status-v0.1.2-brightgreen)](#current-status)
+[![Status](https://img.shields.io/badge/status-v0.1.3-brightgreen)](#current-status)
 [![GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfireui-2496ED?logo=github)](https://github.com/hrodrig/gfireui/pkgs/container/gfireui)
 [![Companion](https://img.shields.io/badge/backend-gfireui--backend-0ea5e9)](https://github.com/hrodrig/gfireui-backend)
 
@@ -37,7 +37,7 @@
 
 GFireUI is the **browser console** for [GFire](https://github.com/hrodrig/gfire): a language-agnostic, HTTP-first job service. The engine stays a single binary with no embedded UI. This repo is the **SvelteKit SPA** — pixels, charts, and workflows. Identity, permissions, and the GFire proxy live in **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)**.
 
-> **Status: v0.1.2.** Ops polish (state rail, Attention, job timeline, branded title/favicon, version footer). Production image on GHCR (tag `v0.1.2`, amd64+arm64). Pair with gfireui-backend.
+> **Status: v0.1.3.** Low-fatigue dark theme + readable ops charts (hero DNA). Production image on GHCR (tag `v0.1.3`, amd64+arm64). Pair with gfireui-backend.
 
 **Related tools (same maintainer):**
 - **[gfire](https://github.com/hrodrig/gfire)** — standalone background job service ([gfire.net](https://gfire.net))
