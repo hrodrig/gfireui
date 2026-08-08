@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-08
+
+### Fixed
+
+- GHCR release image is multi-arch (`linux/amd64` + `linux/arm64`). `v0.1.0` was amd64-only; Apple Silicon / arm64 hosts could not pull a matching platform (often surfaced as pull denied / no matching manifest).
+
 ### Added
 
 - [SECURITY.md](./SECURITY.md) — vulnerability reporting via GitHub Security Advisories (aligned with sibling projects).
@@ -31,5 +37,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Pair with [gfireui-backend](https://github.com/hrodrig/gfireui-backend) and [gfire](https://github.com/hrodrig/gfire). Deploy via [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted) console stack when BFF image is published.
 - Bake `PUBLIC_GFIREUI_API_BASE` at image build time for the target BFF URL.
 
-[Unreleased]: https://github.com/hrodrig/gfireui/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/hrodrig/gfireui/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.1
 [0.1.0]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.0

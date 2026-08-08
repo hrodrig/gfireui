@@ -101,7 +101,7 @@ gfireui is a **Node/SPA** image (no Go binaries required). Achieve the **same op
 On annotated tag `v*` (after merge to `main` per git-flow):
 
 1. Same quality jobs as §5.1 (`check`, `cover` ≥ 80%, `build`)  
-2. Build multi-arch image when ready (amd64 first; arm64 follow-up OK)  
+2. Build multi-arch image (`linux/amd64,linux/arm64`) via buildx
 3. Push to **`ghcr.io/hrodrig/gfireui`** (`packages: write`)  
 4. **SBOM (syft):**  
    - Image SBOM attached to the pushed digest (SPDX and/or CycloneDX — match gfire dual docs when cheap)  
