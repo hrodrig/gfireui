@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- [SECURITY.md](./SECURITY.md) — vulnerability reporting via GitHub Security Advisories (aligned with sibling projects).
+
 ## [0.1.0] - 2026-08-08
 
 ### Added

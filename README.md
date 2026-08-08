@@ -11,7 +11,7 @@
 [![GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfireui-2496ED?logo=github)](https://github.com/hrodrig/gfireui/pkgs/container/gfireui)
 [![Companion](https://img.shields.io/badge/backend-gfireui--backend-0ea5e9)](https://github.com/hrodrig/gfireui-backend)
 
-**Repo:** [github.com/hrodrig/gfireui](https://github.com/hrodrig/gfireui) · **Backend:** [gfireui-backend](https://github.com/hrodrig/gfireui-backend) · **Engine:** [gfire](https://github.com/hrodrig/gfire) · **Design:** [platform design](./docs/superpowers/specs/2026-08-06-gfireui-platform-design.md) · **Site:** [gfire.net](https://gfire.net)
+**Repo:** [github.com/hrodrig/gfireui](https://github.com/hrodrig/gfireui) · **Backend:** [gfireui-backend](https://github.com/hrodrig/gfireui-backend) · **Engine:** [gfire](https://github.com/hrodrig/gfire) · **Design:** [platform design](./docs/superpowers/specs/2026-08-06-gfireui-platform-design.md) · **Security:** [SECURITY.md](./SECURITY.md) · **Site:** [gfire.net](https://gfire.net)
 
 <p align="center">
   <img src="docs/assets/gfireui-hero.png" alt="GFireUI — ops console for GFire" width="100%" />
@@ -223,6 +223,7 @@ Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `
 | [OCI / CI / quality](./docs/superpowers/specs/2026-08-08-gfireui-oci-ci-quality-design.md) | Image, cover ≥80%, GHCR, SBOM, cosign |
 | [SPECIFICATIONS.md](./SPECIFICATIONS.md) | Behavior + image contract |
 | [ROADMAP.md](./ROADMAP.md) | Band status |
+| [SECURITY.md](./SECURITY.md) | Vulnerability reporting (private advisories) |
 | [gfireui-backend](https://github.com/hrodrig/gfireui-backend) | BFF, auth, audit, proxy |
 | [GFire SPEC](https://github.com/hrodrig/gfire/blob/main/SPECIFICATIONS.md) | Engine behavior |
 
