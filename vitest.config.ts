@@ -32,6 +32,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'$env/static/public': path.resolve(rootDir, 'src/lib/test/env-public.ts'),
+			'$env/dynamic/public': path.resolve(rootDir, 'src/lib/test/env-dynamic-public.ts'),
 			'$app/navigation': path.resolve(rootDir, 'src/lib/test/navigation-stub.ts')
 		}
 	}

@@ -7,9 +7,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-08
+
+### Added
+
+- Ops polish: configurable console title (`PUBLIC_GFIREUI_CONSOLE_TITLE`), GFire state filter rail, Attention view (Failed + Dead), structured job detail + timeline, typed servers table, footer with gfire/gfireui/gfireui-backend versions and repo links.
+- Design note: [ops polish](./docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md).
+
 ### Changed
 
+- Console favicon/icons use gfire.net brand mark (SVG, ICO, PNG, apple-touch) instead of the default Svelte logo.
 - Release quality: `make release-check` runs `npm audit --audit-level=high` then check/cover/build; tag workflow calls Make before GHCR push (fail-closed family contract).
+- Ops charts use canonical GFire state names (Enqueued/Processing/…).
 
 ## [0.1.1] - 2026-08-08
 

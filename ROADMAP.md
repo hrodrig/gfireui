@@ -32,6 +32,19 @@ Design: [docs/superpowers/specs/2026-08-08-gfireui-oci-ci-quality-design.md](./d
 | U-034 | `make release-check` + docker smoke curl :8080 | ✅ |
 | U-035 | Release: syft SBOM + cosign keyless (mirror gfire) | ✅ workflow |
 
+## Ops polish (Hangfire as reference only)
+
+Design: [docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md](./docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md)
+
+| ID | Item | Status |
+| -- | ---- | ------ |
+| U-040 | Console title bake-time (`PUBLIC_GFIREUI_CONSOLE_TITLE`) | ✅ |
+| U-041 | State filter rail + nav badges from ops summary | ✅ |
+| U-042 | Attention view (Failed + Dead) | ✅ |
+| U-043 | Structured job detail + state timeline | ✅ |
+| U-044 | Typed servers table | ✅ |
+| U-045 | Footer: stack versions + repo links | ✅ |
+
 ## Post-v0.1
 
 | ID | Item | Notes |

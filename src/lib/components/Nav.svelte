@@ -1,26 +1,39 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { session, clearSession } from '$lib/auth/session';
-	import { canSeeAudit, canSeeOps, canSeeUsers } from '$lib/auth/roles';
-	import { getTheme, toggleTheme, type Theme } from '$lib/theme/theme';
 	import { onMount } from 'svelte';
 
+	import type { OpsSummary } from '$lib/api/types';
+	import { canSeeAudit, canSeeOps, canSeeUsers } from '$lib/auth/roles';
+	import { clearSession, session } from '$lib/auth/session';
+	import { consoleTitle } from '$lib/console';
+	import {
+		attentionCount,
+		getCachedOpsSummary,
+		hotJobsCount,
+		subscribeOpsSummary
+	} from '$lib/ops/summary';
+	import { getTheme, toggleTheme, type Theme } from '$lib/theme/theme';
+
 	let theme = $state<Theme>('dark');
+	let summary = $state<OpsSummary | null>(getCachedOpsSummary());
 
 	onMount(() => {
 		theme = getTheme();
+		return subscribeOpsSummary((s) => (summary = s));
 	});
 
+	const brand = consoleTitle();
 	const role = $derived($session?.user?.role);
 	const links = $derived.by(() => {
-		const items: { href: string; label: string }[] = [];
+		const items: { href: string; label: string; badge?: number }[] = [];
 		if (canSeeOps(role)) {
 			items.push(
-				{ href: '/jobs', label: 'Jobs' },
+				{ href: '/jobs', label: 'Jobs', badge: hotJobsCount(summary) },
+				{ href: '/attention', label: 'Attention', badge: attentionCount(summary) },
 				{ href: '/queues', label: 'Queues' },
-				{ href: '/recurring', label: 'Recurring' },
-				{ href: '/servers', label: 'Servers' }
+				{ href: '/recurring', label: 'Recurring', badge: summary?.recurring_count },
+				{ href: '/servers', label: 'Servers', badge: summary?.servers_count }
 			);
 		}
 		if (canSeeUsers(role)) {
@@ -40,19 +53,29 @@
 		clearSession();
 		void goto('/login');
 	}
+
+	function isActive(href: string): boolean {
+		const path = $page.url.pathname;
+		if (href === '/jobs') {
+			return path === '/jobs' || path.startsWith('/jobs/');
+		}
+		return path === href || path.startsWith(href + '/');
+	}
 </script>
 
 <header class="nav">
-	<a class="nav__brand" href="/jobs">GFireUI</a>
+	<a class="nav__brand" href="/jobs">{brand}</a>
 	<nav class="nav__links" aria-label="Console">
 		{#each links as link (link.href)}
 			<a
 				href={link.href}
 				class="nav__link"
-				class:nav__link--active={$page.url.pathname === link.href ||
-					$page.url.pathname.startsWith(link.href + '/')}
+				class:nav__link--active={isActive(link.href)}
 			>
 				{link.label}
+				{#if link.badge != null && link.badge > 0}
+					<span class="nav__badge">{link.badge}</span>
+				{/if}
 			</a>
 		{/each}
 	</nav>
@@ -100,6 +123,9 @@
 	}
 
 	.nav__link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
 		color: var(--text-muted);
 		font-family: Sora, system-ui, sans-serif;
 		font-size: 0.875rem;
@@ -110,6 +136,16 @@
 	.nav__link--active {
 		color: var(--brand);
 		text-decoration: none;
+	}
+
+	.nav__badge {
+		min-width: 1.1rem;
+		padding: 0 0.3rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--brand) 22%, transparent);
+		font-size: 0.7rem;
+		font-variant-numeric: tabular-nums;
+		text-align: center;
 	}
 
 	.nav__actions {

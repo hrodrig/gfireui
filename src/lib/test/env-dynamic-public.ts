@@ -1,0 +1,5 @@
+export const env = {
+	PUBLIC_GFIREUI_API_BASE: 'http://127.0.0.1:8090',
+	PUBLIC_GFIREUI_CONSOLE_TITLE: 'Acme Corp GFire',
+	PUBLIC_GFIREUI_VERSION: '0.1.1'
+};
