@@ -1,3 +1,6 @@
+/* Hallmark · redesigned-as-app · genre: atmospheric · studied-DNA: hero mock
+ * paper: cool navy · accent: electric cyan-blue · goal: low-fatigue dark ops console
+ */
 @import '@fontsource/sora/400.css';
 @import '@fontsource/sora/600.css';
 @import '@fontsource/source-sans-3/400.css';
@@ -5,23 +8,36 @@
 
 :root,
 [data-theme='dark'] {
-	--bg-page: #1a1a1a;
-	--bg-card: #212222;
-	--border: #333333;
-	--text: #f8fafc;
-	--text-muted: #a3a3a3;
-	--brand: #3b82f6;
-	--success: #4ade80;
-	--warning: #facc15;
+	/* Cool navy paper — softer than pure charcoal, less eye strain */
+	--bg-page: #0c1220;
+	--bg-card: #141c2e;
+	--border: #243044;
+	--text: #f1f5f9;
+	--text-muted: #94a3b8;
+	--brand: #38bdf8;
+	--success: #34d399;
+	--warning: #fbbf24;
 	--danger: #f87171;
+	--chart-axis: #94a3b8;
+	--chart-grid: #243044;
+	--chart-fill-brand: rgba(56, 189, 248, 0.14);
+	--chart-fill-success: rgba(52, 211, 153, 0.14);
 }
 
 [data-theme='light'] {
-	--bg-page: #f4f6f8;
+	--bg-page: #f1f5f9;
 	--bg-card: #ffffff;
 	--border: #e2e8f0;
 	--text: #0f172a;
 	--text-muted: #64748b;
+	--brand: #0284c7;
+	--success: #059669;
+	--warning: #d97706;
+	--danger: #dc2626;
+	--chart-axis: #64748b;
+	--chart-grid: #e2e8f0;
+	--chart-fill-brand: rgba(2, 132, 199, 0.12);
+	--chart-fill-success: rgba(5, 150, 105, 0.12);
 }
 
 *,

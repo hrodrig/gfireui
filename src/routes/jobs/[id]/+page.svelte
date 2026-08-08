@@ -252,7 +252,7 @@
 		padding: 0.75rem;
 		overflow: auto;
 		border-radius: 0.35rem;
-		background: color-mix(in srgb, var(--bg) 80%, black);
+		background: color-mix(in srgb, var(--bg-page) 80%, black);
 		font-size: 0.8rem;
 	}
 

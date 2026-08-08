@@ -5,6 +5,7 @@
 
 	import { apiGet, ApiError } from '$lib/api/client';
 	import type { OpsSummary } from '$lib/api/types';
+	import { chartAxisOpts, getChartTheme } from '$lib/theme/chartTheme';
 
 	const STATES = ['Enqueued', 'Processing', 'Succeeded', 'Failed', 'Dead'] as const;
 
@@ -15,6 +16,7 @@
 	let jobsPlot: uPlot | undefined;
 	let queuesPlot: uPlot | undefined;
 	let timer: ReturnType<typeof setInterval> | undefined;
+	let themeObserver: MutationObserver | undefined;
 
 	async function refresh() {
 		try {
@@ -28,6 +30,7 @@
 
 	function draw() {
 		if (!summary) return;
+		const theme = getChartTheme();
 
 		const jobCounts = STATES.map((s) => summary!.jobs_by_state[s] ?? 0);
 		if (jobsEl) {
@@ -37,13 +40,11 @@
 					width: Math.max(jobsEl.clientWidth, 280),
 					height: 180,
 					title: 'Jobs by state',
-					series: [{}, { label: 'count', stroke: 'var(--brand)', fill: 'rgba(59,130,246,0.15)' }],
+					series: [{}, { label: 'count', stroke: theme.brand, fill: theme.fillBrand }],
 					scales: { x: { time: false } },
 					axes: [
-						{
-							values: (_u, splits) => splits.map((i) => STATES[i] ?? '')
-						},
-						{}
+						chartAxisOpts(theme, (_u, splits) => splits.map((i) => STATES[i] ?? '')),
+						chartAxisOpts(theme)
 					]
 				},
 				[STATES.map((_, i) => i), jobCounts],
@@ -67,13 +68,11 @@
 					width: Math.max(queuesEl.clientWidth, 280),
 					height: 180,
 					title: 'Queue depth',
-					series: [{}, { label: 'depth', stroke: 'var(--success)', fill: 'rgba(74,222,128,0.15)' }],
+					series: [{}, { label: 'depth', stroke: theme.success, fill: theme.fillSuccess }],
 					scales: { x: { time: false } },
 					axes: [
-						{
-							values: (_u, splits) => splits.map((i) => names[i] ?? '')
-						},
-						{}
+						chartAxisOpts(theme, (_u, splits) => splits.map((i) => names[i] ?? '')),
+						chartAxisOpts(theme)
 					]
 				},
 				[names.map((_, i) => i), depths],
@@ -85,10 +84,16 @@
 	onMount(() => {
 		void refresh();
 		timer = setInterval(() => void refresh(), 3000);
+		themeObserver = new MutationObserver(() => draw());
+		themeObserver.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['data-theme']
+		});
 	});
 
 	onDestroy(() => {
 		if (timer) clearInterval(timer);
+		themeObserver?.disconnect();
 		jobsPlot?.destroy();
 		queuesPlot?.destroy();
 	});
@@ -120,6 +125,29 @@
 		border: 1px solid var(--border);
 		border-radius: 0.5rem;
 		background: var(--bg-card);
+		color: var(--text-muted);
+	}
+
+	/* uPlot ships black legend/title defaults — force theme tokens */
+	.ops__panel :global(.uplot) {
+		font-family: 'Source Sans 3', system-ui, sans-serif;
+		color: var(--text-muted);
+	}
+
+	.ops__panel :global(.u-title) {
+		color: var(--text);
+		font-family: Sora, system-ui, sans-serif;
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.ops__panel :global(.u-legend) {
+		font-size: 0.75rem;
+		color: var(--text-muted);
+	}
+
+	.ops__panel :global(.u-legend th),
+	.ops__panel :global(.u-legend .u-value) {
 		color: var(--text-muted);
 	}
 

@@ -7,6 +7,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-08
+
+### Changed
+
+- Dark console theme: cool navy paper, electric cyan-blue brand, softer status colors (less eye strain).
+- Ops charts (uPlot): axis, grid, title, and legend colors follow theme tokens (fixes black-on-dark legends).
+- Charts redraw when toggling light/dark.
+
+### Fixed
+
+- Job detail code blocks used undefined `--bg`; now `--bg-page`.
+
 ## [0.1.2] - 2026-08-08
 
 ### Added
@@ -50,6 +62,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Pair with [gfireui-backend](https://github.com/hrodrig/gfireui-backend) and [gfire](https://github.com/hrodrig/gfire). Deploy via [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted) console stack when BFF image is published.
 - Bake `PUBLIC_GFIREUI_API_BASE` at image build time for the target BFF URL.
 
-[Unreleased]: https://github.com/hrodrig/gfireui/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/hrodrig/gfireui/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.3
+[0.1.2]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.2
 [0.1.1]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.1
 [0.1.0]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.0
