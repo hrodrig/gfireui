@@ -27,13 +27,12 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Release checks (check + cover + build)
+      # Fail-closed: npm audit + check + cover + build (+ local docker-build if Docker up).
+      # Red gate → no GHCR push / SBOM / cosign.
+      - name: Run release checks
         env:
           PUBLIC_GFIREUI_API_BASE: http://127.0.0.1:8090
-        run: |
-          npm run check
-          npm run cover
-          npm run build
+        run: make release-check
 
       - name: Read VERSION
         id: ver

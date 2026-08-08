@@ -209,9 +209,14 @@ make docker-smoke      # optional: curl /
 # docker run --rm -p 8088:8080 gfireui:$(cat VERSION)
 ```
 
-Release tags `v*` publish **`ghcr.io/hrodrig/gfireui`** with syft SBOM + cosign keyless (see `.github/workflows/release.yml`). Ops packaging: [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted).
+### Release quality (fail-closed)
 
-Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `GFIREUI_BACKEND_GFIRE_*` on the BFF.
+- Tag `v*` only from `main` after merging `develop`.
+- Local bar before tagging: `make release-check` (`npm audit --audit-level=high`, svelte-check, cover ≥80% on `src/lib`, production build; docker-build when Docker is up).
+- Tag workflow re-runs `make release-check` **before** buildx push to GHCR (syft SBOM + cosign keyless).
+- Red gate = no image, no GitHub Release assets.
+
+Ops packaging: [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted). Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `GFIREUI_BACKEND_GFIRE_*` on the BFF.
 
 [↑ Back to top](#readme-top)
 

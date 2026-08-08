@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Release quality: `make release-check` runs `npm audit --audit-level=high` then check/cover/build; tag workflow calls Make before GHCR push (fail-closed family contract).
+
 ## [0.1.1] - 2026-08-08
 
 ### Fixed

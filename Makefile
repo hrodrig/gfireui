@@ -33,7 +33,7 @@ help:
 	@echo "$(YELLOW)OCI:$(RESET)"
 	@echo "  $(GREEN)docker-build$(RESET)    multi-stage image → $(IMAGE) (nginx-unprivileged :8080)"
 	@echo "  $(GREEN)docker-smoke$(RESET)    run image briefly; curl /"
-	@echo "  $(GREEN)release-check$(RESET)   check + cover + build (+ docker-build if Docker up)"
+	@echo "  $(GREEN)release-check$(RESET)   npm audit + check + cover + build (+ docker-build if Docker up)"
 	@echo ""
 	@echo "$(YELLOW)Docker (standalone — no sibling checkout):$(RESET)"
 	@echo "  $(GREEN)compose-up$(RESET)      postgres + $(BACKEND_IMAGE) + Vite UI"
@@ -78,7 +78,14 @@ docker-smoke: docker-build
 		docker rm -f $$cid >/dev/null && \
 		echo "docker-smoke: OK (HTTP 200 on / and /login)"
 
-release-check: check cover build
+# Fail-closed pre-publish gate (SPA analog of Go make release-check).
+# npm audit is the security bar (no gocyclo/govulncheck). Red gate → no GHCR.
+release-check:
+	@echo "release-check: npm audit (fail on high+)"
+	npm audit --audit-level=high
+	@$(MAKE) check
+	@$(MAKE) cover
+	@$(MAKE) build
 	@if docker info >/dev/null 2>&1; then \
 		$(MAKE) docker-build; \
 	else \
