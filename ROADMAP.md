@@ -44,6 +44,19 @@ Design: [docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md](./docs/superpo
 | U-043 | Structured job detail + state timeline | ✅ |
 | U-044 | Typed servers table | ✅ |
 | U-045 | Footer: stack versions + repo links | ✅ |
+| U-046 | Realtime sliding activity chart (Hangfire-style motion) | Pending — next session |
+
+## Realtime activity (next)
+
+Hangfire Overview “Realtime” graph walks left as new samples arrive (~2s). Operators like visible motion; our U-006 charts are **state snapshots**, not time series.
+
+| Phase | Scope | Notes |
+| ----- | ----- | ----- |
+| **A (preferred first)** | Client ring buffer | On each `/api/ops/summary` poll, push sample (`Processing`, Succeeded Δ, queue depth). uPlot time series ~60–90 pts on Jobs / Overview. No BFF schema change. |
+| **B** | Optional Day/Week history | BFF (or engine) persist samples — only if Phase A proves useful. |
+| Extras | Badge pulse | Soft pulse on Servers / Attention badges when counts change. |
+
+Design note: [ops polish § Realtime activity](./docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md#realtime-activity-chart). Keep GFire-native naming — do not clone Hangfire chrome.
 
 ## Post-v0.1
 
