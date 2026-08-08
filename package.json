@@ -30,5 +30,8 @@
 		"@fontsource/sora": "^5.3.0",
 		"@fontsource/source-sans-3": "^5.3.0",
 		"uplot": "^1.6.32"
+	},
+	"overrides": {
+		"cookie": "0.7.2"
 	}
 }

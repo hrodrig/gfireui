@@ -11,6 +11,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 - [SECURITY.md](./SECURITY.md) — vulnerability reporting via GitHub Security Advisories (aligned with sibling projects).
 
+### Security
+
+- Force `cookie@0.7.2` via npm `overrides` (CVE-2024-47764 / GHSA-pxg6-pf52-xh8x; transitive from `@sveltejs/kit`).
+
 ## [0.1.0] - 2026-08-08
 
 ### Added
