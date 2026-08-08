@@ -192,8 +192,19 @@ cp .env.example .env   # PUBLIC_GFIREUI_API_BASE=http://127.0.0.1:8090
 npm install
 npm run dev
 npm run check
+npm run cover          # Vitest ≥80% statements/lines on src/lib
 npm run build          # static SPA → build/
 ```
+
+**Production image** (nginx-unprivileged Bookworm, listen **8080**):
+
+```sh
+make docker-build PUBLIC_GFIREUI_API_BASE=http://127.0.0.1:8090
+make docker-smoke      # optional: curl /
+# docker run --rm -p 8088:8080 gfireui:$(cat VERSION)
+```
+
+Release tags `v*` publish **`ghcr.io/hrodrig/gfireui`** with syft SBOM + cosign keyless (see `.github/workflows/release.yml`). Ops packaging: [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted).
 
 Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `GFIREUI_BACKEND_GFIRE_*` on the BFF.
 
@@ -204,10 +215,11 @@ Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `
 | Document | Role |
 | -------- | ---- |
 | [Platform design](./docs/superpowers/specs/2026-08-06-gfireui-platform-design.md) | Approved architecture & UX contract |
+| [OCI / CI / quality](./docs/superpowers/specs/2026-08-08-gfireui-oci-ci-quality-design.md) | Image, cover ≥80%, GHCR, SBOM, cosign |
+| [SPECIFICATIONS.md](./SPECIFICATIONS.md) | Behavior + image contract |
+| [ROADMAP.md](./ROADMAP.md) | Band status |
 | [gfireui-backend](https://github.com/hrodrig/gfireui-backend) | BFF, auth, audit, proxy |
 | [GFire SPEC](https://github.com/hrodrig/gfire/blob/main/SPECIFICATIONS.md) | Engine behavior |
-
-`SPECIFICATIONS.md` / `ROADMAP.md` for this repo land with the first implementation band.
 
 [↑ Back to top](#readme-top)
 

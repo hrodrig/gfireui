@@ -1,0 +1,99 @@
+# Tag v* → quality → GHCR push → syft SBOM → cosign keyless (mirror gfire).
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Release checks (check + cover + build)
+        env:
+          PUBLIC_GFIREUI_API_BASE: http://127.0.0.1:8090
+        run: |
+          npm run check
+          npm run cover
+          npm run build
+
+      - name: Read VERSION
+        id: ver
+        run: echo "version=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/hrodrig/gfireui:v${{ steps.ver.outputs.version }}
+            ghcr.io/hrodrig/gfireui:latest
+          build-args: |
+            PUBLIC_GFIREUI_API_BASE=http://127.0.0.1:8090
+            VERSION=${{ steps.ver.outputs.version }}
+            REVISION=${{ github.sha }}
+          provenance: true
+          sbom: true
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: Generate image SBOM (syft) and attach
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+          IMAGE: ghcr.io/hrodrig/gfireui:v${{ steps.ver.outputs.version }}
+        run: |
+          syft "${IMAGE}@${DIGEST}" -o spdx-json > "gfireui_${{ steps.ver.outputs.version }}_image_sbom.spdx.json"
+          syft "${IMAGE}@${DIGEST}" -o cyclonedx-json > "gfireui_${{ steps.ver.outputs.version }}_image_sbom.cyclonedx.json"
+
+      - name: Cosign sign (keyless)
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign --yes "ghcr.io/hrodrig/gfireui@${DIGEST}"
+
+      - name: Upload SBOM assets to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            gfireui_${{ steps.ver.outputs.version }}_image_sbom.spdx.json
+            gfireui_${{ steps.ver.outputs.version }}_image_sbom.cyclonedx.json
+          generate_release_notes: true

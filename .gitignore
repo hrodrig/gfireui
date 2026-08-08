@@ -31,6 +31,8 @@
 !CODE_OF_CONDUCT.md
 !Dockerfile
 !docker-compose.yml
+!docker/
+!docker/**
 !.env.example
 !static/
 !static/**

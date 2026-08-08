@@ -19,6 +19,19 @@
 
 **v0.1 done when:** login against backend works; Admin can open jobs/users/audit; charts poll when GFire is configured upstream.
 
+## Packaging / quality (for selfhosted console)
+
+Design: [docs/superpowers/specs/2026-08-08-gfireui-oci-ci-quality-design.md](./docs/superpowers/specs/2026-08-08-gfireui-oci-ci-quality-design.md)
+
+| ID | Item | Status |
+| -- | ---- | ------ |
+| U-030 | Dockerfile: nginx-unprivileged Bookworm, listen 8080, security headers | ✅ |
+| U-031 | `make cover` — Vitest coverage ≥ 80% statements (fail-closed) + tests to pass | ✅ |
+| U-032 | GitHub Actions CI: check, cover, build, docker build | ✅ |
+| U-033 | GHCR `ghcr.io/hrodrig/gfireui` on `v*` tags | ✅ workflow |
+| U-034 | `make release-check` + docker smoke curl :8080 | ✅ |
+| U-035 | Release: syft SBOM + cosign keyless (mirror gfire) | ✅ workflow |
+
 ## Post-v0.1
 
 | ID | Item | Notes |

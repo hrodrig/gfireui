@@ -1,7 +1,13 @@
-# gfireui — SPA + local stack using a pre-cooked gfireui-backend image
+# gfireui — SPA + local stack + OCI quality gates
 
 BACKEND_IMAGE ?= gfireui-backend:0.1.0
 COMPOSE_MIGRATIONS := .compose/migrations
+VERSION := $(shell cat VERSION 2>/dev/null | tr -d '[:space:]')
+COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+BUILDDATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+IMAGE ?= gfireui:$(VERSION)
+PUBLIC_GFIREUI_API_BASE ?= http://127.0.0.1:8090
+COVER_MIN_PERCENT ?= 80
 
 check-docker = @docker info >/dev/null 2>&1 || { echo "Error: Docker is not running. Start Docker and try again."; exit 1; }
 
@@ -11,7 +17,8 @@ RESET  := \033[0m
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install check test build ensure-backend-image extract-migrations compose-up compose-down
+.PHONY: help install check test cover build docker-build docker-smoke release-check \
+	ensure-backend-image extract-migrations compose-up compose-down
 
 help:
 	@echo "$(GREEN)gfireui$(RESET) — GFire ops console (SvelteKit)"
@@ -20,19 +27,23 @@ help:
 	@echo "  $(GREEN)install$(RESET)         npm install"
 	@echo "  $(GREEN)check$(RESET)           svelte-check"
 	@echo "  $(GREEN)test$(RESET)            vitest"
+	@echo "  $(GREEN)cover$(RESET)           vitest coverage; fail if statements < $(COVER_MIN_PERCENT)%"
 	@echo "  $(GREEN)build$(RESET)           static production build"
+	@echo ""
+	@echo "$(YELLOW)OCI:$(RESET)"
+	@echo "  $(GREEN)docker-build$(RESET)    multi-stage image → $(IMAGE) (nginx-unprivileged :8080)"
+	@echo "  $(GREEN)docker-smoke$(RESET)    run image briefly; curl /"
+	@echo "  $(GREEN)release-check$(RESET)   check + cover + build (+ docker-build if Docker up)"
 	@echo ""
 	@echo "$(YELLOW)Docker (standalone — no sibling checkout):$(RESET)"
 	@echo "  $(GREEN)compose-up$(RESET)      postgres + $(BACKEND_IMAGE) + Vite UI"
 	@echo "  $(GREEN)compose-down$(RESET)    stop stack"
 	@echo ""
-	@echo "Requires local image $(BACKEND_IMAGE) (build/pull elsewhere)."
-	@echo "Override: make compose-up BACKEND_IMAGE=gfireui-backend:0.1.0"
-	@echo "Login: admin@example.com / adminadmin"
-	@echo "Ports: UI :5173  API :8090  Postgres :5433"
+	@echo "Override: PUBLIC_GFIREUI_API_BASE=... make docker-build"
+	@echo "Login (compose): admin@example.com / adminadmin"
 
 install:
-	npm install
+	npm ci
 
 check:
 	npm run check
@@ -40,8 +51,40 @@ check:
 test:
 	npm test
 
+cover:
+	@npm run cover
+	@echo "cover: Vitest thresholds enforce ≥$(COVER_MIN_PERCENT)% statements/lines (see vitest.config.ts)"
+
 build:
-	npm run build
+	PUBLIC_GFIREUI_API_BASE=$(PUBLIC_GFIREUI_API_BASE) npm run build
+
+docker-build: ## requires Docker
+	$(check-docker)
+	docker build \
+		--build-arg PUBLIC_GFIREUI_API_BASE=$(PUBLIC_GFIREUI_API_BASE) \
+		--build-arg VERSION=$(VERSION) \
+		--build-arg REVISION=$(COMMIT) \
+		--build-arg BUILDDATE=$(BUILDDATE) \
+		-t $(IMAGE) \
+		-t gfireui:latest \
+		.
+
+docker-smoke: docker-build
+	$(check-docker)
+	@cid=$$(docker run -d -p 18088:8080 $(IMAGE)) && \
+		sleep 2 && \
+		curl -sfS -o /dev/null -w "%{http_code}" http://127.0.0.1:18088/ | grep -q 200 && \
+		curl -sfS -o /dev/null http://127.0.0.1:18088/login && \
+		docker rm -f $$cid >/dev/null && \
+		echo "docker-smoke: OK (HTTP 200 on / and /login)"
+
+release-check: check cover build
+	@if docker info >/dev/null 2>&1; then \
+		$(MAKE) docker-build; \
+	else \
+		echo "release-check: Docker unavailable — skipped docker-build"; \
+	fi
+	@echo "release-check passed."
 
 ensure-backend-image:
 	$(check-docker)

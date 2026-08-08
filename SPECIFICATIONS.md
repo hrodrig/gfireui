@@ -29,6 +29,19 @@ Browser SPA that talks **only** to [gfireui-backend](https://github.com/hrodrig/
 
 `OpsCharts` polls `GET /api/ops/summary` every 3s while mounted (uPlot). No SSE/WebSocket in v0.1.
 
+## Quality gate
+
+- Unit tests: Vitest, colocated `src/**/*.test.ts`
+- Coverage: `make cover` / `npm run cover` — **≥ 80% statements and lines** on `src/lib` business logic (`vitest.config.ts` thresholds). Fail-closed in CI.
+- Design: [OCI / CI / quality](./docs/superpowers/specs/2026-08-08-gfireui-oci-ci-quality-design.md)
+
+## OCI image
+
+- Image: `ghcr.io/hrodrig/gfireui:v<semver>` (local: `gfireui:<VERSION>`)
+- Runtime: `nginxinc/nginx-unprivileged` Bookworm, listen **8080**, non-root
+- Build-arg / env: `PUBLIC_GFIREUI_API_BASE` (baked at build; no trailing slash)
+- Release tags: syft SBOM + cosign keyless (mirror gfire); see `.github/workflows/release.yml`
+
 ## Non-goals (v0.1)
 
 OAuth2 UI, SSE, pipeline/DAG screens, theme packs.
