@@ -90,8 +90,10 @@
 			class="theme-toggle"
 			onclick={handleThemeToggle}
 			aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+			title={theme === 'light' ? 'Dark mode' : 'Light mode'}
 		>
-			{theme === 'light' ? 'Dark' : 'Light'}
+			<span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
+			<span class="theme-toggle__label">{theme === 'light' ? 'Dark' : 'Light'}</span>
 		</button>
 		<button type="button" class="button-ghost" onclick={logout}>Log out</button>
 	</div>
@@ -148,6 +150,11 @@
 		text-align: center;
 	}
 
+	.nav__link[href='/attention'] .nav__badge {
+		background: color-mix(in srgb, var(--state-failed) 28%, transparent);
+		color: var(--state-failed);
+	}
+
 	.nav__actions {
 		display: flex;
 		align-items: center;
@@ -162,5 +169,13 @@
 
 	.button-ghost {
 		background: transparent;
+	}
+
+	.theme-toggle {
+		gap: 0.35rem;
+	}
+
+	.theme-toggle__label {
+		font-size: 0.8rem;
 	}
 </style>

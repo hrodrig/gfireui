@@ -87,7 +87,7 @@
 					Queue
 					<input bind:value={queueFilter} placeholder="default" />
 				</label>
-				<button type="submit">Apply</button>
+				<button type="submit" class="button-primary">Apply</button>
 			</form>
 
 			{#if error}

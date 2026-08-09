@@ -25,7 +25,8 @@ References: Hangfire / [Sidekiq](https://sidekiq.org/) product UIs and the [Moni
 | Calm empty-states | Adopt (our voice) |
 | Separate “Retries” product tab | Adapt → **Attention** (Failed + Dead) |
 | Queue **latency** (age of oldest enqueued) as ops signal | Adopt later (Sidekiq-style; needs engine metric/API) |
-| Sliding **realtime** activity graph (time on X) | Adopt later — motion cue; see [Realtime activity chart](#realtime-activity-chart) |
+| Sliding **realtime** activity graph (time on X) | Adopt — Phase A client ring buffer; see [Realtime activity chart](#realtime-activity-chart) |
+| Semantic state colors + categorical bars + ID truncate | Adopt — U-047 (Claude redesign DNA; brand amber ≠ Processing blue) |
 | Compact JSON stats endpoint for probes | Partial — BFF `ops/summary` already; tighten for k8s probes later |
 | Mount Web UI under `/sidekiq` + `X-Script-Name` | Reject for SPA — k8s uses Host/Ingress rewrite; no app `BASE_PATH` |
 | C# Activate / culture / “Back to site” | Reject |
@@ -60,7 +61,7 @@ Each name links to its GitHub repo.
 
 ## Realtime activity chart
 
-**Roadmap:** U-046 · **Status:** Pending (next working session)
+**Roadmap:** U-046 · **Status:** Phase A shipped (client ring buffer on Jobs)
 
 Hangfire’s Overview “Realtime” panel is a sliding window (~2s ticks): new samples enter on the right, old ones leave on the left. That motion signals “the system is alive” even when absolute counts are small. GFireUI today polls `/api/ops/summary` and renders **category snapshots** (jobs by state, queue depth) — correct for diagnosis, low motion.
 

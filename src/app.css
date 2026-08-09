@@ -1,5 +1,5 @@
-/* Hallmark · redesigned-as-app · genre: atmospheric · studied-DNA: hero mock
- * paper: cool navy · accent: electric cyan-blue · goal: low-fatigue dark ops console
+/* Hallmark · redesigned-as-app · studied-DNA: hero navy + Claude ops mock
+ * paper: cool navy · brand: fire amber (≠ status blues) · semantic state colors
  */
 @import '@fontsource/sora/400.css';
 @import '@fontsource/sora/600.css';
@@ -8,36 +8,92 @@
 
 :root,
 [data-theme='dark'] {
-	/* Cool navy paper — softer than pure charcoal, less eye strain */
-	--bg-page: #0c1220;
-	--bg-card: #141c2e;
-	--border: #243044;
-	--text: #f1f5f9;
-	--text-muted: #94a3b8;
-	--brand: #38bdf8;
-	--success: #34d399;
-	--warning: #fbbf24;
-	--danger: #f87171;
-	--chart-axis: #94a3b8;
-	--chart-grid: #243044;
-	--chart-fill-brand: rgba(56, 189, 248, 0.14);
-	--chart-fill-success: rgba(52, 211, 153, 0.14);
+	--bg-page: #0b0f14;
+	--bg-card: #11161d;
+	--border: #232b35;
+	--text: #e6edf3;
+	--text-muted: #7d8a99;
+	/* Brand distinct from Processing blue */
+	--brand: #f0a94e;
+	--success: #3fbf7f;
+	--warning: #c79a4b;
+	--danger: #f0655c;
+	--chart-axis: #7d8a99;
+	--chart-grid: #232b35;
+	--chart-fill-brand: rgba(240, 169, 78, 0.14);
+	--chart-fill-success: rgba(63, 191, 127, 0.14);
+
+	--state-succeeded: #3fbf7f;
+	--state-failed: #f0655c;
+	--state-dead: #b84a4a;
+	--state-processing: #4fa6e0;
+	--state-enqueued: #8b93a0;
+	--state-scheduled: #8b93a0;
+	--state-awaiting: #c79a4b;
+	--state-attention: #c79a4b;
+	--state-cancelled: #5c6672;
+	--state-deleted: #5c6672;
 }
 
 [data-theme='light'] {
-	--bg-page: #f1f5f9;
+	--bg-page: #f6f7f5;
 	--bg-card: #ffffff;
-	--border: #e2e8f0;
-	--text: #0f172a;
-	--text-muted: #64748b;
-	--brand: #0284c7;
-	--success: #059669;
-	--warning: #d97706;
-	--danger: #dc2626;
-	--chart-axis: #64748b;
-	--chart-grid: #e2e8f0;
-	--chart-fill-brand: rgba(2, 132, 199, 0.12);
-	--chart-fill-success: rgba(5, 150, 105, 0.12);
+	--border: #e3e6e3;
+	--text: #161a16;
+	--text-muted: #5b655c;
+	--brand: #c97a26;
+	--success: #1e9e5a;
+	--warning: #a87c2e;
+	--danger: #d6473e;
+	--chart-axis: #5b655c;
+	--chart-grid: #e3e6e3;
+	--chart-fill-brand: rgba(201, 122, 38, 0.12);
+	--chart-fill-success: rgba(30, 158, 90, 0.12);
+
+	--state-succeeded: #1e9e5a;
+	--state-failed: #d6473e;
+	--state-dead: #9c3a3a;
+	--state-processing: #2c7fbe;
+	--state-enqueued: #6b7480;
+	--state-scheduled: #6b7480;
+	--state-awaiting: #a87c2e;
+	--state-attention: #a87c2e;
+	--state-cancelled: #8a9199;
+	--state-deleted: #8a9199;
+}
+
+/* Semantic badge / rail / bar hooks */
+.state-succeeded {
+	--state-fg: var(--state-succeeded);
+	--state-bg: color-mix(in srgb, var(--state-succeeded) 14%, transparent);
+}
+.state-failed {
+	--state-fg: var(--state-failed);
+	--state-bg: color-mix(in srgb, var(--state-failed) 14%, transparent);
+}
+.state-dead {
+	--state-fg: var(--state-dead);
+	--state-bg: color-mix(in srgb, var(--state-dead) 14%, transparent);
+}
+.state-processing {
+	--state-fg: var(--state-processing);
+	--state-bg: color-mix(in srgb, var(--state-processing) 14%, transparent);
+}
+.state-enqueued,
+.state-scheduled {
+	--state-fg: var(--state-enqueued);
+	--state-bg: color-mix(in srgb, var(--state-enqueued) 14%, transparent);
+}
+.state-awaiting,
+.state-attention {
+	--state-fg: var(--state-awaiting);
+	--state-bg: color-mix(in srgb, var(--state-awaiting) 14%, transparent);
+}
+.state-cancelled,
+.state-deleted,
+.state-unknown {
+	--state-fg: var(--state-cancelled);
+	--state-bg: color-mix(in srgb, var(--state-cancelled) 12%, transparent);
 }
 
 *,
@@ -107,6 +163,20 @@ button:hover,
 .button:hover {
 	border-color: var(--brand);
 	color: var(--brand);
+}
+
+button.button-primary,
+.button-primary {
+	background: color-mix(in srgb, var(--brand) 22%, var(--bg-card));
+	border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
+	color: var(--text);
+}
+
+button.button-primary:hover,
+.button-primary:hover {
+	background: color-mix(in srgb, var(--brand) 32%, var(--bg-card));
+	color: var(--text);
+	border-color: var(--brand);
 }
 
 button:focus-visible,

@@ -120,16 +120,38 @@ export function relativeTime(iso: string | undefined): string {
 	return `${d}d ago`;
 }
 
+export function jobUpdatedAt(job: Record<string, unknown>): string | undefined {
+	const states = Array.isArray(job.states) ? job.states : [];
+	let latest: string | undefined;
+	let latestMs = -Infinity;
+	for (const s of states) {
+		const r = asRecord(s);
+		const t = r?.created_at != null ? String(r.created_at) : undefined;
+		if (!t) continue;
+		const ms = Date.parse(t);
+		if (Number.isFinite(ms) && ms >= latestMs) {
+			latestMs = ms;
+			latest = t;
+		}
+	}
+	if (latest) return latest;
+	const nested = asRecord(job.job);
+	if (job.created_at != null) return String(job.created_at);
+	if (nested?.created_at != null) return String(nested.created_at);
+	return undefined;
+}
+
 export function listJobFields(job: Record<string, unknown>): {
 	id: string;
 	state: string;
 	queue: string;
 	name: string;
+	updatedAt?: string;
 } {
 	const nested = asRecord(job.job);
 	const id = String(job.id ?? job.ID ?? nested?.id ?? '');
 	const state = String(job.current_state ?? job.state ?? job.State ?? nested?.state ?? '');
 	const queue = String(job.queue ?? job.Queue ?? nested?.queue ?? '—');
 	const name = String(job.name ?? job.Name ?? nested?.name ?? job.handler ?? '—');
-	return { id, state, queue, name };
+	return { id, state, queue, name, updatedAt: jobUpdatedAt(job) };
 }
