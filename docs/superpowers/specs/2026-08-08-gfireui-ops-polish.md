@@ -27,6 +27,7 @@ References: Hangfire / [Sidekiq](https://sidekiq.org/) product UIs and the [Moni
 | Queue **latency** (age of oldest enqueued) as ops signal | Adopt later (Sidekiq-style; needs engine metric/API) |
 | Sliding **realtime** activity graph (time on X) | Adopt — Phase A client ring buffer; see [Realtime activity chart](#realtime-activity-chart) |
 | Semantic state colors + categorical bars + ID truncate | Adopt — U-047 (Claude redesign DNA; brand amber ≠ Processing blue) |
+| Scale-ready state counters (inventory ≠ throughput) | Adopt later — U-049 (compact format, labels, windowed/rate metrics, retention ops) |
 | Compact JSON stats endpoint for probes | Partial — BFF `ops/summary` already; tighten for k8s probes later |
 | Mount Web UI under `/sidekiq` + `X-Script-Name` | Reject for SPA — k8s uses Host/Ingress rewrite; no app `BASE_PATH` |
 | C# Activate / culture / “Back to site” | Reject |
