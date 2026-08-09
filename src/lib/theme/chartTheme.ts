@@ -10,12 +10,12 @@ export type ChartTheme = {
 };
 
 const FALLBACKS: ChartTheme = {
-	brand: '#38bdf8',
-	success: '#34d399',
-	axis: '#94a3b8',
-	grid: '#243044',
-	fillBrand: 'rgba(56, 189, 248, 0.14)',
-	fillSuccess: 'rgba(52, 211, 153, 0.14)'
+	brand: '#f0a94e',
+	success: '#3fbf7f',
+	axis: '#7d8a99',
+	grid: '#232b35',
+	fillBrand: 'rgba(240, 169, 78, 0.14)',
+	fillSuccess: 'rgba(63, 191, 127, 0.14)'
 };
 
 export function readCssColor(name: string, fallback: string, root: Element = document.documentElement): string {

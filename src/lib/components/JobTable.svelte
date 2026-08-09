@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { GFireJob } from '$lib/api/types';
+	import StateBadge from '$lib/components/StateBadge.svelte';
 	import { listJobFields, processingServerId, type JobStateEntry } from '$lib/jobs/parse';
+	import { formatClockTime, truncateId } from '$lib/theme/states';
 
 	type Props = {
 		jobs: GFireJob[];
@@ -9,10 +11,24 @@
 	};
 
 	let { jobs, onSelect, emptyMessage = 'No jobs match this filter.' }: Props = $props();
+	let copiedId = $state('');
 
 	function peer(job: GFireJob): string {
 		const states = (job.states as JobStateEntry[] | undefined) ?? [];
 		return processingServerId(states) ?? '—';
+	}
+
+	async function copyId(id: string, e: MouseEvent) {
+		e.stopPropagation();
+		try {
+			await navigator.clipboard.writeText(id);
+			copiedId = id;
+			setTimeout(() => {
+				if (copiedId === id) copiedId = '';
+			}, 1200);
+		} catch {
+			/* ignore */
+		}
 	}
 </script>
 
@@ -25,6 +41,7 @@
 				<th scope="col">Queue</th>
 				<th scope="col">Handler</th>
 				<th scope="col">Peer</th>
+				<th scope="col">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -32,18 +49,39 @@
 				{@const fields = listJobFields(job as Record<string, unknown>)}
 				<tr>
 					<td>
-						{#if fields.id && onSelect}
-							<button type="button" class="linkish" onclick={() => onSelect(fields.id)}>
-								{fields.id}
-							</button>
+						{#if fields.id}
+							<span class="id-cell">
+								{#if onSelect}
+									<button
+										type="button"
+										class="linkish"
+										title={fields.id}
+										onclick={() => onSelect(fields.id)}
+									>
+										{truncateId(fields.id)}
+									</button>
+								{:else}
+									<span title={fields.id}>{truncateId(fields.id)}</span>
+								{/if}
+								<button
+									type="button"
+									class="copy"
+									title="Copy ID"
+									aria-label="Copy job ID"
+									onclick={(e) => void copyId(fields.id, e)}
+								>
+									{copiedId === fields.id ? '✓' : '⎘'}
+								</button>
+							</span>
 						{:else}
-							{fields.id || '—'}
+							—
 						{/if}
 					</td>
-					<td>{fields.state || '—'}</td>
+					<td><StateBadge state={fields.state || '—'} /></td>
 					<td>{fields.queue}</td>
 					<td>{fields.name}</td>
 					<td class="peer">{peer(job)}</td>
+					<td class="updated">{formatClockTime(fields.updatedAt)}</td>
 				</tr>
 			{/each}
 		</tbody>
@@ -74,19 +112,54 @@
 		font-size: 0.875rem;
 	}
 
-	.peer {
-		font-family: ui-monospace, monospace;
+	th {
+		font-family: Sora, system-ui, sans-serif;
+		font-size: 0.7rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		font-weight: 600;
+	}
+
+	.id-cell {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 		font-size: 0.8rem;
 	}
 
 	.linkish {
+		border: 0;
 		background: none;
-		border: none;
 		padding: 0;
 		color: var(--brand);
-		cursor: pointer;
 		font: inherit;
+		cursor: pointer;
 		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.copy {
+		border: 0;
+		background: none;
+		padding: 0.1rem 0.25rem;
+		color: var(--text-muted);
+		cursor: pointer;
+		font-size: 0.75rem;
+		line-height: 1;
+	}
+
+	.copy:hover {
+		color: var(--brand);
+		border-color: transparent;
+	}
+
+	.peer,
+	.updated {
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
+		color: var(--text-muted);
 	}
 
 	.empty {

@@ -68,12 +68,21 @@ describe('listJobFields / relativeTime', () => {
 			current_state: 'Processing',
 			job: { id: 'x1', name: 'echo', queue: 'default' }
 		});
-		expect(fields).toEqual({
+		expect(fields).toMatchObject({
 			id: 'x1',
 			state: 'Processing',
 			queue: 'default',
 			name: 'echo'
 		});
+		const withStates = listJobFields({
+			current_state: 'Succeeded',
+			job: { id: 'y1', name: 'echo', queue: 'default' },
+			states: [
+				{ name: 'Enqueued', created_at: '2026-08-08T20:00:00Z' },
+				{ name: 'Succeeded', created_at: '2026-08-08T20:01:00Z' }
+			]
+		});
+		expect(withStates.updatedAt).toBe('2026-08-08T20:01:00Z');
 		expect(relativeTime(undefined)).toBe('—');
 		expect(relativeTime(new Date().toISOString())).toMatch(/ago/);
 		expect(relativeTime(new Date(Date.now() - 120_000).toISOString())).toMatch(/m ago/);

@@ -7,6 +7,20 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-08-09
+
+### Added
+
+- Semantic state colors, Active/Terminal rail groups, state badges in the jobs table (U-047).
+- Truncated job IDs with copy, Updated column from latest state timestamp.
+- Categorical horizontal bars for jobs-by-state; empty state when queue depth is zero.
+- Sliding Activity chart from client ring buffer on ops summary polls (U-046 Phase A).
+
+### Changed
+
+- Brand accent to fire amber so it stays distinct from Processing blue.
+- Theme toggle shows sun/moon alongside Light/Dark label.
+
 ## [0.1.3] - 2026-08-08
 
 ### Changed
@@ -62,7 +76,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Pair with [gfireui-backend](https://github.com/hrodrig/gfireui-backend) and [gfire](https://github.com/hrodrig/gfire). Deploy via [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted) console stack when BFF image is published.
 - Bake `PUBLIC_GFIREUI_API_BASE` at image build time for the target BFF URL.
 
-[Unreleased]: https://github.com/hrodrig/gfireui/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/hrodrig/gfireui/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.4
 [0.1.3]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.3
 [0.1.2]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.2
 [0.1.1]: https://github.com/hrodrig/gfireui/releases/tag/v0.1.1
