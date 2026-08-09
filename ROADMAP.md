@@ -46,6 +46,22 @@ Design: [docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md](./docs/superpo
 | U-045 | Footer: stack versions + repo links | ✅ |
 | U-046 | Realtime sliding activity chart (Hangfire-style motion) | ✅ Phase A (client ring buffer) |
 | U-047 | Semantic state UX (Claude redesign DNA) | ✅ |
+| U-048 | Jobs list pagination (long lists) | Pending |
+
+## Jobs list pagination (U-048)
+
+**Today:** Jobs / Attention call `listJobs` without page controls. Long dogfood runs only show the engine’s first page (no “Next / Prev”, no “Showing X of Y”). Footer versions stay visible; table just ends.
+
+**Wanted:**
+
+| Piece | Notes |
+| ----- | ----- |
+| UI | Page size + Next/Prev (or cursor) on Jobs and Attention |
+| Query | Pass `limit` / `offset` (or engine cursor) through BFF proxy |
+| Chrome | “Showing N–M” when total known; keep filters (state, queue) across pages |
+| Engine | Align with gfire `GET /v1/jobs` pagination contract |
+
+Depends on GFire list API surface (limit already exists; confirm total/cursor if needed).
 
 ## Semantic state UX (U-047)
 
