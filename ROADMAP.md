@@ -46,6 +46,51 @@ Design: [docs/superpowers/specs/2026-08-08-gfireui-ops-polish.md](./docs/superpo
 | U-045 | Footer: stack versions + repo links | ✅ |
 | U-046 | Realtime sliding activity chart (Hangfire-style motion) | ✅ Phase A (client ring buffer) |
 | U-047 | Semantic state UX (Claude redesign DNA) | ✅ |
+| U-048 | Jobs list pagination (long lists) | Pending |
+| U-049 | Scale-ready state counters (semantics + format) | Pending |
+
+## Jobs list pagination (U-048)
+
+**Today:** Jobs / Attention call `listJobs` without page controls. Long dogfood runs only show the engine’s first page (no “Next / Prev”, no “Showing X of Y”). Footer versions stay visible; table just ends.
+
+**Wanted:**
+
+| Piece | Notes |
+| ----- | ----- |
+| UI | Page size + Next/Prev (or cursor) on Jobs and Attention |
+| Query | Pass `limit` / `offset` (or engine cursor) through BFF proxy |
+| Chrome | “Showing N–M” when total known; keep filters (state, queue) across pages |
+| Engine | Align with gfire `GET /v1/jobs` pagination contract |
+
+Depends on GFire list API surface (limit already exists; confirm total/cursor if needed).
+
+## Scale-ready state counters (U-049)
+
+### Problem
+
+`GET /api/ops/summary` → `jobs_by_state` is a **live inventory**: how many jobs sit in each state **right now** in storage — not “processed today” and not lifetime throughput.
+
+At Hangfire-scale volume (e.g. **500k+ Succeeded/day**) that creates three failure modes:
+
+1. **Semantic surprise** — A healthy cluster that “never fails” drives `Succeeded` into the hundreds of thousands until cleanup TTL moves rows to `Deleted`. Operators read a giant green number as backlog, not success.
+2. **UI overflow** — Rail / badges / charts show raw integers (`512384`) with no compact form; Attention stays `0` so the console looks idle while the system is busiest.
+3. **Cost** — Polling (~3s) that `COUNT(*)` per state against a fat terminal table becomes expensive; U-048 pagination alone does not fix summary load.
+
+Engine retention (`cleanup.job_retention`, Succeeded → Deleted) caps the inventory only if operators enable and tune it. Without retention, `Succeeded` is an unbounded well.
+
+### Proposed solution
+
+| Layer | Change |
+| ----- | ------ |
+| **Label / UX** | Make meaning explicit in chrome: e.g. “In storage” / tooltip — counts are current inventory, not daily throughput. Compact display (`499.2k`, `1.2M`) on rail and nav badges. |
+| **Throughput (prefer)** | Prefer U-046 Phase B (or engine metrics): rate / window charts (“Succeeded last 1h / 24h”) so health reads as motion, not pile size. |
+| **Windowed counts (optional)** | Extend ops summary (engine or BFF) with `jobs_by_state_window` for a selectable horizon (1h / 24h) **or** document that UI inventory assumes retention ≤ N hours. |
+| **Ops contract** | Document default retention for console stacks; warn in dogfood/selfhosted when retention is off or multi-day. |
+| **Perf** | Engine maintains incremental counters (or cached counts) — avoid full-table scan on every summary poll at 500k rows. |
+
+**Out of scope for U-049 alone:** changing GFire’s state machine. Retention and delete TTL stay engine concerns; UI must not pretend inventory ≡ throughput.
+
+**Depends on:** U-046 Phase B (nice pairing); gfire cleanup / metrics surface; possibly BFF summary schema bump.
 
 ## Semantic state UX (U-047)
 

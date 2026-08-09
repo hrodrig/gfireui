@@ -11,7 +11,7 @@
 [![GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfireui-2496ED?logo=github)](https://github.com/hrodrig/gfireui/pkgs/container/gfireui)
 [![Companion](https://img.shields.io/badge/backend-gfireui--backend-0ea5e9)](https://github.com/hrodrig/gfireui-backend)
 
-**Repo:** [github.com/hrodrig/gfireui](https://github.com/hrodrig/gfireui) · **Backend:** [gfireui-backend](https://github.com/hrodrig/gfireui-backend) · **Engine:** [gfire](https://github.com/hrodrig/gfire) · **Design:** [platform design](./docs/superpowers/specs/2026-08-06-gfireui-platform-design.md) · **Security:** [SECURITY.md](./SECURITY.md) · **Site:** [gfire.net](https://gfire.net)
+**Repo:** [github.com/hrodrig/gfireui](https://github.com/hrodrig/gfireui) · **Backend:** [gfireui-backend](https://github.com/hrodrig/gfireui-backend) · **Engine:** [gfire](https://github.com/hrodrig/gfire) · **Deploy (full stack):** [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted) · **Design:** [platform design](./docs/superpowers/specs/2026-08-06-gfireui-platform-design.md) · **Security:** [SECURITY.md](./SECURITY.md) · **Site:** [gfire.net](https://gfire.net)
 
 <p align="center">
   <img src="docs/assets/gfireui-hero.png" alt="GFireUI — ops console for GFire" width="100%" />
@@ -39,9 +39,12 @@ GFireUI is the **browser console** for [GFire](https://github.com/hrodrig/gfire)
 
 > **Status: v0.1.4.** Semantic state UX + sliding activity chart (U-046/U-047). Production image on GHCR (tag `v0.1.4`, amd64+arm64). Pair with gfireui-backend.
 
+> **Want a full stack (engine + BFF + this UI)?** This repo is the SPA only. For a complete GFire instance with the ops console already wired — three engine peers, Postgres, BFF, and SPA — use **[gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted)** (`console` Compose stack). Pin images with `GFIRE_VERSION` / `GFIREUI_*_VERSION` in `${GFIRE_STACK_HOST_DATA}/.env`.
+
 **Related tools (same maintainer):**
 - **[gfire](https://github.com/hrodrig/gfire)** — standalone background job service ([gfire.net](https://gfire.net))
 - **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)** — Go BFF for this console
+- **[gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted)** — Compose / Helm / runbooks for a full engine + console deployment
 - **[pgwd](https://github.com/hrodrig/pgwd)** — PostgreSQL connection watchdog
 - **[gghstats](https://github.com/hrodrig/gghstats)** — GitHub traffic beyond 14 days
 - **[kzero](https://github.com/hrodrig/kzero)** — bastion-first declarative workload reset
@@ -57,6 +60,7 @@ GFireUI is the **browser console** for [GFire](https://github.com/hrodrig/gfire)
 - [Current status](#current-status)
 - [Repository layout](#repository-layout)
 - [Development](#development)
+- [Full stack (selfhosted)](#full-stack-selfhosted)
 - [Docs](#docs)
 - [License](#license)
 
@@ -216,7 +220,17 @@ make docker-smoke      # optional: curl /
 - Tag workflow re-runs `make release-check` **before** buildx push to GHCR (syft SBOM + cosign keyless).
 - Red gate = no image, no GitHub Release assets.
 
-Ops packaging: [gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted). Ops screens need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `GFIREUI_BACKEND_GFIRE_*` on the BFF.
+[↑ Back to top](#readme-top)
+
+## Full stack (selfhosted)
+
+Local `make compose-up` here is **UI + BFF** for development — not a production multi-peer GFire cluster.
+
+If you want a **complete instance** (engine peers + Postgres + BFF + this SPA) ready to dogfood or operate:
+
+→ **[gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted)** — especially `run/docker-compose/console/` and the README “console” path.
+
+Ops screens still need a reachable **[gfire](https://github.com/hrodrig/gfire)** via `GFIREUI_BACKEND_GFIRE_*` on the BFF when you wire pieces yourself.
 
 [↑ Back to top](#readme-top)
 
